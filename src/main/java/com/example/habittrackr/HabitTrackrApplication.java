@@ -6,8 +6,8 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @SpringBootApplication
-@EnableJpaRepositories("com.example.habittrackr") // Замените на фактический путь
-@EntityScan("com.example.habittrackr") // Замените на фактический путь
+@EnableJpaRepositories("com.example.habittrackr")
+@EntityScan("com.example.habittrackr")
 public class HabitTrackrApplication {
 
     public static void main(String[] args) {

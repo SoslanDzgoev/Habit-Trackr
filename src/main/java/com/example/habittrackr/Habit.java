@@ -7,13 +7,13 @@ public class Habit {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private long id;
 
     private String name;
-    private int everyDaySuccessful;
-    private int currentComplexity;
+    private long everyDaySuccessful;
+    private long currentComplexity;
     private String identity;
-    private int initialComplexity;
+    private long initialComplexity;
     private String contract;
     private String howToPrepareEvn;
 
@@ -31,11 +31,11 @@ public class Habit {
     public Habit() {
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -47,19 +47,19 @@ public class Habit {
         this.name = name;
     }
 
-    public int getEveryDaySuccessful() {
+    public long getEveryDaySuccessful() {
         return everyDaySuccessful;
     }
 
-    public void setEveryDaySuccessful(int everyDaySuccessful) {
+    public void setEveryDaySuccessful(long everyDaySuccessful) {
         this.everyDaySuccessful = everyDaySuccessful;
     }
 
-    public int getCurrentComplexity() {
+    public long getCurrentComplexity() {
         return currentComplexity;
     }
 
-    public void setCurrentComplexity(int currentComplexity) {
+    public void setCurrentComplexity(long currentComplexity) {
         this.currentComplexity = currentComplexity;
     }
 
@@ -71,11 +71,11 @@ public class Habit {
         this.identity = identity;
     }
 
-    public int getInitialComplexity() {
+    public long getInitialComplexity() {
         return initialComplexity;
     }
 
-    public void setInitialComplexity(int initialComplexity) {
+    public void setInitialComplexity(long initialComplexity) {
         this.initialComplexity = initialComplexity;
     }
 
@@ -94,4 +94,7 @@ public class Habit {
     public void setHowToPrepareEvn(String howToPrepareEvn) {
         this.howToPrepareEvn = howToPrepareEvn;
     }
+
+
+
 }

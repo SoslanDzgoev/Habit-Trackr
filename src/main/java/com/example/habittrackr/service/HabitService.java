@@ -1,6 +1,10 @@
-package com.example.habittrackr;
+package com.example.habittrackr.service;
 
+import com.example.habittrackr.storage.Habit;
+import com.example.habittrackr.storage.HabitKey;
+import com.example.habittrackr.storage.HabitRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -12,19 +16,21 @@ public class HabitService {
     public HabitService(HabitRepository habitsRepository) {
         this.habitRepository = habitsRepository;
     }
+
+
     public List<Habit> getAllHabits() {
         return habitRepository.findAll();
     }
 
-    public Optional<Habit> getHabitById(Long id) {
+    public Optional<Habit> getHabitById(HabitKey id) {
         return habitRepository.findById(id);
     }
 
     public Habit createOrUpdateHabit(Habit habit) {
         return habitRepository.save(habit);
     }
-
-    public void deleteHabitById(Long id) {
+@Transactional
+    public void deleteHabitById(HabitKey id) {
         habitRepository.deleteById(id);
     }
 }

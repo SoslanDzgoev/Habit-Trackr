@@ -2,7 +2,6 @@ package com.example.habittrackr.controller;
 
 import com.example.habittrackr.storage.Habit;
 import com.example.habittrackr.service.HabitService;
-import com.example.habittrackr.storage.HabitKey;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,9 +24,9 @@ public class HabitController {
         return ResponseEntity.ok(habits);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Habit> getHabitById(@PathVariable HabitKey id) {
-        return habitService.getHabitById(id)
+    @GetMapping("/{userId}/{habitId}")
+    public ResponseEntity<Habit> getHabitById(@PathVariable Long userId, @PathVariable Long habitId) {
+        return habitService.getHabitById(userId, habitId)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
@@ -38,22 +37,21 @@ public class HabitController {
         return ResponseEntity.ok(newHabit);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Habit> updateHabit(@PathVariable HabitKey id, @RequestBody Habit habit) {
-        if (habitService.getHabitById(id).isEmpty()) {
+    @PutMapping("/update {userId}/{habitId}")
+    public ResponseEntity<Habit> updateHabit(@PathVariable long userId,@PathVariable Long habitId, @RequestBody Habit habit) {
+        if (habitService.getHabitById(userId, habitId).isEmpty()) {
             return ResponseEntity.notFound().build();
         }
         Habit updateHabit = habitService.createOrUpdateHabit(habit);
         return ResponseEntity.ok(updateHabit);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteHabit(@PathVariable HabitKey id) {
-        if (habitService.getHabitById(id).isEmpty()) {
+    @DeleteMapping("/{userId}/{habitId}")
+    public ResponseEntity<Void> deleteHabit(@PathVariable long userId,@PathVariable Long habitId) {
+        if (habitService.getHabitById(userId, habitId).isEmpty()) {
             return ResponseEntity.notFound().build();
         }
-        habitService.deleteHabitById(id);
+        habitService.deleteHabitById(userId, habitId);
         return ResponseEntity.ok().build();
     }
-
 }

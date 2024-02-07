@@ -6,11 +6,12 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 import java.util.Optional;
 
-public interface HabitRepository extends JpaRepository<Habit, Long> {
+public interface HabitRepository extends JpaRepository<Habit, HabitKey> {
     @Query("SELECT h FROM Habit h WHERE h.user.id = :userId")
     List<Habit> findByUserId(Long userId);
 
-    void deleteById(HabitKey id);
+    void deleteByIdUserIdAndIdHabitId(Long userId, Long habitId);
 
-    Optional<Habit> findById(HabitKey id);
+    Optional<Habit> findByIdUserIdAndIdHabitId(Long userId, Long habitId);
+
 }

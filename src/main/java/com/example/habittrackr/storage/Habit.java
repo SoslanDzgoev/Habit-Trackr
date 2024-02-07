@@ -3,6 +3,7 @@ package com.example.habittrackr.storage;
 import jakarta.persistence.*;
 
 import java.util.Objects;
+import java.util.UUID;
 
 @Entity
 public class Habit {
@@ -32,8 +33,9 @@ public class Habit {
         this.initialComplexity = initialComplexity;
         this.contract = contract;
         this.howToPrepareEvn = howToPrepareEvn;
-        this.id = new HabitKey(user.getId(), name);
+        this.id = new HabitKey(user.getId(), UUID.randomUUID().getMostSignificantBits());
     }
+
 
     public Habit() {
     }

@@ -2,15 +2,18 @@ package com.example.habittrackr.service;
 
 import com.example.habittrackr.storage.Habit;
 import com.example.habittrackr.storage.User;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@Transactional
 @SpringBootTest
 class HabitServiceTest {
     @Autowired
@@ -18,30 +21,20 @@ class HabitServiceTest {
     @Autowired
     private UserService userService;
 
-    @Test
-    public void testsest() {
+    private User user;
+
+    @BeforeEach
+    void setUp(){
+        user = new User("soslan", "12345", "@gmail");
+        userService.createOrUpdateUser(user);
     }
 
-    @Test
-    public void testCreate() {
-        User user = new User("soslan", "12345", "@gmail");
-        userService.createOrUpdateUser(user);
-
-        Habit habit = new Habit(user, "Прогулка",
-                "Идентичность", 5000, "контракт", "Среда");
-        Habit createdHabit = habitService.createOrUpdateHabit(habit);
-
-        assertNotNull(createdHabit);
-        assertNotNull(createdHabit.getName());
-        assertEquals("Прогулка", createdHabit.getName());
-    }
 
     @Test
-    public void testRead() {
-        User user = new User("soslan", "12345", "@gmail");
-        userService.createOrUpdateUser(user);
-        Habit habit = new Habit(user, "Прогулка", "Идентичность", 5000, "контракт", "Среда");
-        Habit habit2 = new Habit(user, "Чтение", "Идентичность", 5000, "контракт", "Среда");
+    void getAllHabits() {
+
+        Habit habit = createHabit("HabitName1");
+        Habit habit2 = createHabit("HabitName2");
 
         habitService.createOrUpdateHabit(habit);
         habitService.createOrUpdateHabit(habit2);
@@ -50,33 +43,47 @@ class HabitServiceTest {
 
         assertFalse(allHabits.isEmpty());
         assertEquals(2, allHabits.size());
-
     }
 
     @Test
-    public void testUpdate() {
-        User user = new User("soslan", "12345", "@gmail");
-        userService.createOrUpdateUser(user);
-        Habit habit = new Habit(user, "Прогулка", "Идентичность", 5000, "контракт", "Среда");
-        Habit createHabit = habitService.createOrUpdateHabit(habit);
+    void getHabitById() {
+        Habit habit = createHabit("Прогулка");
+        habitService.createOrUpdateHabit(habit);
 
-        createHabit.setName("Тренировка");
-        createHabit.setContract("новый контракт");
+        Long userId = habit.getId().getUserId();
+        Long habitId = habit.getId().getHabitId();
 
-        Habit updateHabit = habitService.createOrUpdateHabit(createHabit);
+        Optional<Habit> fetchedHabitOptional = habitService.getHabitById(userId,habitId);
 
-        assertEquals("Тренировка", updateHabit.getName());
-        assertEquals("новый контракт", updateHabit.getContract());
+        assertTrue(fetchedHabitOptional.isPresent());
+
+        Habit fetchedHabit = fetchedHabitOptional.get();
+
+        assertEquals("Прогулка", fetchedHabit.getName());
+        assertEquals("Прогулка", fetchedHabit.getName());
     }
 
+    @Test
+    void testCreateAndUpdateHabit() {
+        Habit habit = createHabit("Прогулка");
+        Habit createdHabit = habitService.createOrUpdateHabit(habit);
+
+        assertNotNull(createdHabit);
+        assertEquals("Прогулка", createdHabit.getName());
+
+        createdHabit.setName("Тренировка");
+        createdHabit.setContract("новый контракт");
+
+        Habit updatedHabit = habitService.createOrUpdateHabit(createdHabit);
+
+        assertEquals("Тренировка", updatedHabit.getName());
+        assertEquals("новый контракт", updatedHabit.getContract());
+    }
 
     @Test
-    @Transactional
+
     public void testDeleteHabitById() {
-        User user = new User("username", "password", "email");
-        userService.createOrUpdateUser(user);
-
-        Habit habit = new Habit(user, "Habit Name", "Habit Identity", 1L, "Habit Contract", "Habit Preparation");
+        Habit habit = createHabit("HabitName");
         habit = habitService.createOrUpdateHabit(habit);
 
         assertNotNull(habitService.getHabitById(habit.getId().getUserId(), habit.getId().getHabitId()));
@@ -84,5 +91,9 @@ class HabitServiceTest {
         habitService.deleteHabitById(habit.getId().getUserId(), habit.getId().getHabitId());
 
         assertFalse(habitService.getHabitById(habit.getId().getUserId(), habit.getId().getHabitId()).isPresent());
+    }
+
+    private Habit createHabit(String name){
+        return new Habit(user, name, "Habit Identity", 1L, "Habit Contract", "Habit Preparation");
     }
 }

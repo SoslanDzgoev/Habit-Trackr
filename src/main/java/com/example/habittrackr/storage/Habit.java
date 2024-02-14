@@ -9,7 +9,6 @@ import java.util.UUID;
 public class Habit {
 
     @EmbeddedId
-    @AttributeOverride(name = "userId", column = @Column(name = "user_id"))
     private HabitKey id;
 
     @ManyToOne
@@ -33,7 +32,11 @@ public class Habit {
         this.initialComplexity = initialComplexity;
         this.contract = contract;
         this.howToPrepareEvn = howToPrepareEvn;
-        this.id = new HabitKey(user.getId(), UUID.randomUUID().getMostSignificantBits());
+        if (user.getId() != null) {
+            this.id = new HabitKey(user.getId(), UUID.randomUUID().getMostSignificantBits());
+        } else {
+            throw new IllegalArgumentException("User id cannot be null");
+        }
     }
 
 
@@ -109,6 +112,7 @@ public class Habit {
                 habit.getContract()) && Objects.equals(getHowToPrepareEvn(),
                 habit.getHowToPrepareEvn());
     }
+
 
     @Override
     public int hashCode() {

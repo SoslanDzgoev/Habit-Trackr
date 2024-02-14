@@ -2,6 +2,7 @@ package com.example.habittrackr.controller;
 
 import com.example.habittrackr.storage.Habit;
 import com.example.habittrackr.service.HabitService;
+import com.example.habittrackr.storage.HabitKey;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +19,7 @@ public class HabitController {
         this.habitService = habitService;
     }
 
+
     @GetMapping
     public ResponseEntity<List<Habit>> getAllHabits() {
         List<Habit> habits = habitService.getAllHabits();
@@ -31,17 +33,12 @@ public class HabitController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @PostMapping
-    public ResponseEntity<Habit> createHabit(@RequestBody Habit habit) {
-        Habit newHabit = habitService.createOrUpdateHabit(habit);
-        return ResponseEntity.ok(newHabit);
-    }
-
-    @PutMapping("/update {userId}/{habitId}")
+    @PutMapping("/{userId}/{habitId}")
     public ResponseEntity<Habit> updateHabit(@PathVariable long userId,@PathVariable Long habitId, @RequestBody Habit habit) {
         if (habitService.getHabitById(userId, habitId).isEmpty()) {
             return ResponseEntity.notFound().build();
         }
+        habit.setId(new HabitKey(userId, habitId));
         Habit updateHabit = habitService.createOrUpdateHabit(habit);
         return ResponseEntity.ok(updateHabit);
     }

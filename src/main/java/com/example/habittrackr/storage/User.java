@@ -1,7 +1,9 @@
 package com.example.habittrackr.storage;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -17,7 +19,9 @@ public class User {
     private String password;
     private String email;
 
-    @OneToMany
+    @JsonIgnore
+    // При удаленнии юзера, автоматом удалятся привычки.
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Habit> habits;
 
     public User() {
@@ -27,7 +31,7 @@ public class User {
         this.username = username;
         this.password = password;
         this.email = email;
-
+        this.habits = new ArrayList<>();
     }
 
     public String getUsername() {
@@ -59,7 +63,7 @@ public class User {
     }
 
     public void addHabits(List<Habit> habits) {
-        this.habits = habits;
+        this.habits.addAll(habits);
     }
 
     public Long getId() {

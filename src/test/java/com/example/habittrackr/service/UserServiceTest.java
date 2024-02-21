@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,7 +21,11 @@ class UserServiceTest {
 
     @BeforeEach
     void setUp() {
-        user = new User("soslan", "12345", "@gmail");
+        user = new User();
+        user.setUsername("Soslan");
+        user.setPassword("12345");
+        user.setEmail("gmail.com");
+        user.setHabits(new ArrayList<>());
         userService.createOrUpdateUser(user);
     }
 
@@ -29,7 +34,10 @@ class UserServiceTest {
 
         assertNotNull(userService.getUserById(user.getId()));
 
-        User user2 = new User("Аслан", "12345", "@gmail");
+        User user2 = new User();
+        user.setUsername("Aslan");
+        user.setPassword("54321");
+        user.setEmail("gmail.com");
         userService.createOrUpdateUser(user2);
         assertNotNull(userService.getUserById(user2.getId()));
 
@@ -50,7 +58,7 @@ class UserServiceTest {
 
         User newUser = fetchedUser.get();
 
-        assertEquals("soslan", newUser.getUsername());
+        assertEquals("Soslan", newUser.getUsername());
     }
 
     @Test
@@ -58,7 +66,7 @@ class UserServiceTest {
         User createUser = userService.createOrUpdateUser(user);
 
         assertNotNull(createUser);
-        assertEquals("soslan", createUser.getUsername());
+        assertEquals("Soslan", createUser.getUsername());
 
         createUser.setUsername("Aslan");
         createUser.setPassword("54321");

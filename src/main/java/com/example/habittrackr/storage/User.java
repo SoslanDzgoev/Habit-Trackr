@@ -3,7 +3,6 @@ package com.example.habittrackr.storage;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -25,13 +24,6 @@ public class User {
     private List<Habit> habits;
 
     public User() {
-    }
-
-    public User(String username, String password, String email) {
-        this.username = username;
-        this.password = password;
-        this.email = email;
-        this.habits = new ArrayList<>();
     }
 
     public String getUsername() {
@@ -64,6 +56,10 @@ public class User {
 
     public void addHabits(List<Habit> habits) {
         this.habits.addAll(habits);
+    }
+
+    public void setHabits(List<Habit> habits) {
+        this.habits = habits;
     }
 
     public Long getId() {

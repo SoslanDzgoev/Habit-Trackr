@@ -1,17 +1,14 @@
 package com.example.habittrackr.controller;
 
+import com.example.habittrackr.service.HabitService;
 import com.example.habittrackr.service.UserService;
 import com.example.habittrackr.storage.Habit;
 import com.example.habittrackr.storage.User;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -21,17 +18,16 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.mockito.Mockito.*;
 
-
-@AutoConfigureMockMvc
-@SpringBootTest
-@ExtendWith(MockitoExtension.class)
+//@WebMvcTest(UserController.class)
 class UserControllerTest {
-
     @Autowired
     private MockMvc mockMvc;
 
-    @Mock
+    @MockBean
     private UserService userService;
+
+    @MockBean
+    private HabitService habitService;
 
     @Test
     public void getAllUsers() throws Exception {
@@ -43,13 +39,20 @@ class UserControllerTest {
 
     @Test
     void addHabitToUserTest() throws Exception {
-        User user = new User("Soslan","12345", "gmail.com");
+        User user = new User();
+        user.setUsername("Soslan");
+        user.setPassword("12345");
+        user.setEmail("gmail.com");
         user.setId(1L);
         when(userService.getUserById(1L)).thenReturn(Optional.of(user));
 
-        Habit habit = new Habit(null, "Привычка", "Описание привычки", 2L,
-                "Контракт для привычки", "Как подготовиться к выполнению привычки");
-
+        Habit habit = new Habit();
+        habit.setUser(null);
+        habit.setName("Habit");
+        habit.setIdentity("Habit Identity");
+        habit.setInitialComplexity(1L);
+        habit.setContract("Habit Contract");
+        habit.setHowToPrepareEvn("Habit Preparation");
         List<Habit> habitList = Collections.singletonList(habit);
 
         ObjectMapper objectMapper = new ObjectMapper();

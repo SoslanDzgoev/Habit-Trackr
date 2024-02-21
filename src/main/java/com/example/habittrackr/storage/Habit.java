@@ -2,9 +2,6 @@ package com.example.habittrackr.storage;
 
 import jakarta.persistence.*;
 
-import java.util.Objects;
-import java.util.UUID;
-
 @Entity
 public class Habit {
 
@@ -21,20 +18,8 @@ public class Habit {
     private Long initialComplexity;
     private String contract;
     private String howToPrepareEvn;
+    private Long numberOfTimes;
 
-    public Habit(User user, String name, String identity, Long initialComplexity, String contract, String howToPrepareEvn) {
-        this.user = user;
-        this.name = name;
-        this.identity = identity;
-        this.initialComplexity = initialComplexity;
-        this.contract = contract;
-        this.howToPrepareEvn = howToPrepareEvn;
-        if (user != null) {
-            this.id = new HabitKey(user.getId(), UUID.randomUUID().getMostSignificantBits());
-        } else {
-            this.id = null;
-        }
-    }
 
     public Habit() {
     }
@@ -95,23 +80,4 @@ public class Habit {
         this.howToPrepareEvn = howToPrepareEvn;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Habit habit = (Habit) o;
-        return getInitialComplexity() ==
-                habit.getInitialComplexity() && Objects.equals(getId(),
-                habit.getId()) && Objects.equals(user, habit.user) && Objects.equals(getName(),
-                habit.getName()) && Objects.equals(getIdentity(),
-                habit.getIdentity()) && Objects.equals(getContract(),
-                habit.getContract()) && Objects.equals(getHowToPrepareEvn(),
-                habit.getHowToPrepareEvn());
-    }
-
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(getId(), user, getName(), getIdentity(), getInitialComplexity(), getContract(), getHowToPrepareEvn());
-    }
 }

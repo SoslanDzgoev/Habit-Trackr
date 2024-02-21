@@ -1,6 +1,7 @@
 package com.example.habittrackr.service;
 
 import com.example.habittrackr.storage.Habit;
+import com.example.habittrackr.storage.HabitKey;
 import com.example.habittrackr.storage.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -8,8 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -24,11 +27,14 @@ class HabitServiceTest {
     private User user;
 
     @BeforeEach
-    void setUp(){
-        user = new User("soslan", "12345", "@gmail");
+    void setUp() {
+        user = new User();
+        user.setUsername("Soslan");
+        user.setPassword("12345");
+        user.setEmail("gmail.com");
+        user.setHabits(new ArrayList<>());
         userService.createOrUpdateUser(user);
     }
-
 
     @Test
     void getAllHabits() {
@@ -53,7 +59,7 @@ class HabitServiceTest {
         Long userId = habit.getId().getUserId();
         Long habitId = habit.getId().getHabitId();
 
-        Optional<Habit> fetchedHabitOptional = habitService.getHabitById(userId,habitId);
+        Optional<Habit> fetchedHabitOptional = habitService.getHabitById(userId, habitId);
 
         assertTrue(fetchedHabitOptional.isPresent());
 
@@ -93,7 +99,17 @@ class HabitServiceTest {
         assertFalse(habitService.getHabitById(habit.getId().getUserId(), habit.getId().getHabitId()).isPresent());
     }
 
-    private Habit createHabit(String name){
-        return new Habit(user, name, "Habit Identity", 1L, "Habit Contract", "Habit Preparation");
+    private Habit createHabit(String name) {
+        Habit habit = new Habit();
+        habit.setUser(user);
+        habit.setName(name);
+        habit.setIdentity("Habit Identity");
+        habit.setInitialComplexity(1L);
+        habit.setContract("Habit Contract");
+        habit.setHowToPrepareEvn("Habit Preparation");HabitKey habitKey = new HabitKey(user.getId(), UUID.randomUUID().getMostSignificantBits());
+        habit.setId(habitKey);
+
+        return habit;
+
     }
 }

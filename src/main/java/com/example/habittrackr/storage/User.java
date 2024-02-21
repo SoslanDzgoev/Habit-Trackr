@@ -20,8 +20,8 @@ public class User {
     private String email;
 
     @JsonIgnore
-    // При удаленнии юзера, автоматом удалятся привычки.
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
     private List<Habit> habits;
 
     public User() {

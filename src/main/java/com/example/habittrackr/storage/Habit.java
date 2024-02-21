@@ -18,27 +18,23 @@ public class Habit {
 
     private String name;
     private String identity;
-    private long initialComplexity;
+    private Long initialComplexity;
     private String contract;
     private String howToPrepareEvn;
 
-    public Habit(User user, String name, String identity, long initialComplexity, String contract, String howToPrepareEvn) {
-        if (user == null || user.getId() == null) {
-            throw new IllegalArgumentException("User or userId cannot be null");
-        }
+    public Habit(User user, String name, String identity, Long initialComplexity, String contract, String howToPrepareEvn) {
         this.user = user;
         this.name = name;
         this.identity = identity;
         this.initialComplexity = initialComplexity;
         this.contract = contract;
         this.howToPrepareEvn = howToPrepareEvn;
-        if (user.getId() != null) {
+        if (user != null) {
             this.id = new HabitKey(user.getId(), UUID.randomUUID().getMostSignificantBits());
         } else {
-            throw new IllegalArgumentException("User id cannot be null");
+            this.id = null;
         }
     }
-
 
     public Habit() {
     }

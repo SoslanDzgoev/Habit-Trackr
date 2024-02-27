@@ -19,8 +19,8 @@ public class User {
     private String email;
 
     @JsonIgnore
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    @OneToMany(cascade = CascadeType.ALL,orphanRemoval = true)
+    @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = true)
     private List<Habit> habits;
 
     public User() {

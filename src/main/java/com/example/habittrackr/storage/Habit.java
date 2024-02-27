@@ -8,7 +8,7 @@ public class Habit {
     @EmbeddedId
     private HabitKey id;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @MapsId("userId")
     @JoinColumn(name = "user_id")
     private User user;
@@ -19,7 +19,6 @@ public class Habit {
     private String contract;
     private String howToPrepareEvn;
     private Long numberOfTimes;
-
 
     public Habit() {
     }

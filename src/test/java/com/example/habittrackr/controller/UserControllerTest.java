@@ -1,7 +1,7 @@
 package com.example.habittrackr.controller;
 
-import com.example.habittrackr.service.HabitService;
-import com.example.habittrackr.service.UserService;
+import com.example.habittrackr.service.HabitServiceImpl;
+import com.example.habittrackr.service.UserServiceImpl;
 import com.example.habittrackr.storage.Habit;
 import com.example.habittrackr.storage.User;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -24,10 +24,10 @@ class UserControllerTest {
     private MockMvc mockMvc;
 
     @MockBean
-    private UserService userService;
+    private UserServiceImpl userServiceImpl;
 
     @MockBean
-    private HabitService habitService;
+    private HabitServiceImpl habitServiceImpl;
 
     @Test
     public void getAllUsers() throws Exception {
@@ -44,7 +44,7 @@ class UserControllerTest {
         user.setPassword("12345");
         user.setEmail("gmail.com");
         user.setId(1L);
-        when(userService.getUserById(1L)).thenReturn(Optional.of(user));
+        when(userServiceImpl.getUserById(1L)).thenReturn(Optional.of(user));
 
         Habit habit = new Habit();
         habit.setUser(null);

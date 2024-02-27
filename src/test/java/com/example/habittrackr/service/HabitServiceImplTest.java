@@ -18,11 +18,11 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @Transactional
 @SpringBootTest
-class HabitServiceTest {
+class HabitServiceImplTest {
     @Autowired
-    private HabitService habitService;
+    private HabitServiceImpl habitServiceImpl;
     @Autowired
-    private UserService userService;
+    private UserServiceImpl userServiceImpl;
 
     private User user;
 
@@ -33,7 +33,7 @@ class HabitServiceTest {
         user.setPassword("12345");
         user.setEmail("gmail.com");
         user.setHabits(new ArrayList<>());
-        userService.createOrUpdateUser(user);
+        userServiceImpl.createOrUpdateUser(user);
     }
 
     @Test
@@ -42,10 +42,10 @@ class HabitServiceTest {
         Habit habit = createHabit("HabitName1");
         Habit habit2 = createHabit("HabitName2");
 
-        habitService.createOrUpdateHabit(habit);
-        habitService.createOrUpdateHabit(habit2);
+        habitServiceImpl.createOrUpdateHabit(habit);
+        habitServiceImpl.createOrUpdateHabit(habit2);
 
-        List<Habit> allHabits = habitService.getAllHabits();
+        List<Habit> allHabits = habitServiceImpl.getAllHabits();
 
         assertFalse(allHabits.isEmpty());
         assertEquals(2, allHabits.size());
@@ -54,12 +54,12 @@ class HabitServiceTest {
     @Test
     void getHabitById() {
         Habit habit = createHabit("Прогулка");
-        habitService.createOrUpdateHabit(habit);
+        habitServiceImpl.createOrUpdateHabit(habit);
 
         Long userId = habit.getId().getUserId();
         Long habitId = habit.getId().getHabitId();
 
-        Optional<Habit> fetchedHabitOptional = habitService.getHabitById(userId, habitId);
+        Optional<Habit> fetchedHabitOptional = habitServiceImpl.getHabitById(userId, habitId);
 
         assertTrue(fetchedHabitOptional.isPresent());
 
@@ -72,7 +72,7 @@ class HabitServiceTest {
     @Test
     void testCreateAndUpdateHabit() {
         Habit habit = createHabit("Прогулка");
-        Habit createdHabit = habitService.createOrUpdateHabit(habit);
+        Habit createdHabit = habitServiceImpl.createOrUpdateHabit(habit);
 
         assertNotNull(createdHabit);
         assertEquals("Прогулка", createdHabit.getName());
@@ -80,7 +80,7 @@ class HabitServiceTest {
         createdHabit.setName("Тренировка");
         createdHabit.setContract("новый контракт");
 
-        Habit updatedHabit = habitService.createOrUpdateHabit(createdHabit);
+        Habit updatedHabit = habitServiceImpl.createOrUpdateHabit(createdHabit);
 
         assertEquals("Тренировка", updatedHabit.getName());
         assertEquals("новый контракт", updatedHabit.getContract());
@@ -90,13 +90,13 @@ class HabitServiceTest {
 
     public void testDeleteHabitById() {
         Habit habit = createHabit("HabitName");
-        habit = habitService.createOrUpdateHabit(habit);
+        habit = habitServiceImpl.createOrUpdateHabit(habit);
 
-        assertNotNull(habitService.getHabitById(habit.getId().getUserId(), habit.getId().getHabitId()));
+        assertNotNull(habitServiceImpl.getHabitById(habit.getId().getUserId(), habit.getId().getHabitId()));
 
-        habitService.deleteHabitById(habit.getId().getUserId(), habit.getId().getHabitId());
+        habitServiceImpl.deleteHabitById(habit.getId().getUserId(), habit.getId().getHabitId());
 
-        assertFalse(habitService.getHabitById(habit.getId().getUserId(), habit.getId().getHabitId()).isPresent());
+        assertFalse(habitServiceImpl.getHabitById(habit.getId().getUserId(), habit.getId().getHabitId()).isPresent());
     }
 
     private Habit createHabit(String name) {

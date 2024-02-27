@@ -13,10 +13,10 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-class UserServiceTest {
+class UserServiceImplTest {
 
     @Autowired
-    private UserService userService;
+    private UserServiceImpl userServiceImpl;
     private User user;
 
     @BeforeEach
@@ -26,22 +26,22 @@ class UserServiceTest {
         user.setPassword("12345");
         user.setEmail("gmail.com");
         user.setHabits(new ArrayList<>());
-        userService.createOrUpdateUser(user);
+        userServiceImpl.createOrUpdateUser(user);
     }
 
     @Test
     void getAllUsers() {
 
-        assertNotNull(userService.getUserById(user.getId()));
+        assertNotNull(userServiceImpl.getUserById(user.getId()));
 
         User user2 = new User();
         user.setUsername("Aslan");
         user.setPassword("54321");
         user.setEmail("gmail.com");
-        userService.createOrUpdateUser(user2);
-        assertNotNull(userService.getUserById(user2.getId()));
+        userServiceImpl.createOrUpdateUser(user2);
+        assertNotNull(userServiceImpl.getUserById(user2.getId()));
 
-        List<User> userList = userService.getAllUsers();
+        List<User> userList = userServiceImpl.getAllUsers();
         assertFalse(userList.isEmpty());
         assertEquals(2, userList.size());
 
@@ -51,7 +51,7 @@ class UserServiceTest {
     void getUserById() {
         Long id = user.getId();
 
-        Optional<User> fetchedUser = userService.getUserById(id);
+        Optional<User> fetchedUser = userServiceImpl.getUserById(id);
 
         assertNotNull(fetchedUser);
         assertTrue(fetchedUser.isPresent());
@@ -63,7 +63,7 @@ class UserServiceTest {
 
     @Test
     void createOrUpdateUser() {
-        User createUser = userService.createOrUpdateUser(user);
+        User createUser = userServiceImpl.createOrUpdateUser(user);
 
         assertNotNull(createUser);
         assertEquals("Soslan", createUser.getUsername());
@@ -71,7 +71,7 @@ class UserServiceTest {
         createUser.setUsername("Aslan");
         createUser.setPassword("54321");
 
-        User updateUser = userService.createOrUpdateUser(createUser);
+        User updateUser = userServiceImpl.createOrUpdateUser(createUser);
 
         assertEquals("Aslan", updateUser.getUsername());
         assertEquals("54321", updateUser.getPassword());
@@ -79,12 +79,12 @@ class UserServiceTest {
 
     @Test
     void deleteUserById() {
-        User createUser = userService.createOrUpdateUser(user);
+        User createUser = userServiceImpl.createOrUpdateUser(user);
         assertNotNull(createUser);
         Long id = createUser.getId();
 
-        userService.deleteUserById(id);
+        userServiceImpl.deleteUserById(id);
 
-        assertFalse(userService.getUserById(id).isPresent());
+        assertFalse(userServiceImpl.getUserById(id).isPresent());
     }
 }

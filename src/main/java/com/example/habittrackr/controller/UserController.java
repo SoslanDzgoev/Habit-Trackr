@@ -1,7 +1,7 @@
 package com.example.habittrackr.controller;
 
-import com.example.habittrackr.service.HabitService;
-import com.example.habittrackr.service.UserService;
+import com.example.habittrackr.service.HabitServiceImpl;
+import com.example.habittrackr.service.UserServiceImpl;
 import com.example.habittrackr.storage.Habit;
 import com.example.habittrackr.storage.HabitKey;
 import com.example.habittrackr.storage.User;
@@ -17,25 +17,25 @@ import java.util.Random;
 @RequestMapping("/users")
 public class UserController {
 
-    private final UserService userService;
+    private final UserServiceImpl userServiceImpl;
 
-    private final HabitService habitService;
+    private final HabitServiceImpl habitServiceImpl;
 
     @Autowired
-    public UserController(UserService userService, HabitService habitService) {
-        this.userService = userService;
-        this.habitService = habitService;
+    public UserController(UserServiceImpl userServiceImpl, HabitServiceImpl habitServiceImpl) {
+        this.userServiceImpl = userServiceImpl;
+        this.habitServiceImpl = habitServiceImpl;
     }
 
     @GetMapping
     public ResponseEntity<List<User>> getAllUsers(){
-        List<User> users = userService.getAllUsers();
+        List<User> users = userServiceImpl.getAllUsers();
         return ResponseEntity.ok(users);
     }
 
     @PostMapping("/{userId}/habits")
     public ResponseEntity<User> addHabitToUser(@PathVariable long userId, @RequestBody List<Habit> habits) {
-        Optional<User> userOptional = userService.getUserById(userId);
+        Optional<User> userOptional = userServiceImpl.getUserById(userId);
         if (userOptional.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
@@ -44,7 +44,7 @@ public class UserController {
             habit.setUser(user);
             HabitKey habitKey = new HabitKey(userId, new Random().nextLong());
             habit.setId(habitKey);
-            habitService.createOrUpdateHabit(habit);
+            habitServiceImpl.createOrUpdateHabit(habit);
         }
 
         return ResponseEntity.ok(user);
@@ -52,7 +52,7 @@ public class UserController {
 
     @GetMapping("/{userId}/habits")
     public ResponseEntity<List<Habit>> getUserHabits(@PathVariable long userId){
-        User user = userService.getUserById(userId)
+        User user = userServiceImpl.getUserById(userId)
                 .orElseThrow(()-> new RuntimeException("User not found"));
         List<Habit> habits = user.getHabits();
         return ResponseEntity.ok(habits);
@@ -60,33 +60,42 @@ public class UserController {
 
     @GetMapping("/{id}")
     public ResponseEntity<User> getUserById(@PathVariable Long id) {
-        return userService.getUserById(id)
+        return userServiceImpl.getUserById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping
     public ResponseEntity<User> createUser(@RequestBody User user) {
-        User newUser = userService.createOrUpdateUser(user);
+        User newUser = userServiceImpl.createOrUpdateUser(user);
         return ResponseEntity.ok(newUser);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody User user) {
-        if (userService.getUserById(id).isEmpty()) {
+        Optional<User> existingUser = userServiceImpl.getUserById(id);
+
+        if (existingUser.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
-        User updateUser = userService.createOrUpdateUser(user);
-        return ResponseEntity.ok(updateUser);
+        User existingUserData = existingUser.get();
+        existingUserData.setUsername(user.getUsername());
+        existingUserData.setPassword(user.getPassword());
+        existingUserData.setEmail(user.getEmail());
+
+        User update = userServiceImpl.createOrUpdateUser(existingUserData);
+
+        return ResponseEntity.ok(update);
     }
 
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable long id) {
-        if (userService.getUserById(id).isEmpty()) {
+        Optional<User> existingUser = userServiceImpl.getUserById(id);
+        if (userServiceImpl.getUserById(id).isEmpty()) {
             return ResponseEntity.notFound().build();
         }
-        userService.deleteUserById(id);
+        userServiceImpl.deleteUserById(id);
         return ResponseEntity.ok().build();
     }
 

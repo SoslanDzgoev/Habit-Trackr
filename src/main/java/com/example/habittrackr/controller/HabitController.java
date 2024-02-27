@@ -1,7 +1,7 @@
 package com.example.habittrackr.controller;
 
 import com.example.habittrackr.storage.Habit;
-import com.example.habittrackr.service.HabitService;
+import com.example.habittrackr.service.HabitServiceImpl;
 import com.example.habittrackr.storage.HabitKey;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -12,43 +12,43 @@ import java.util.List;
 @RestController
 @RequestMapping("/habits")
 public class HabitController {
-    private final HabitService habitService;
+    private final HabitServiceImpl habitServiceImpl;
 
     @Autowired
-    public HabitController(HabitService habitService) {
-        this.habitService = habitService;
+    public HabitController(HabitServiceImpl habitServiceImpl) {
+        this.habitServiceImpl = habitServiceImpl;
     }
 
 
     @GetMapping
     public ResponseEntity<List<Habit>> getAllHabits() {
-        List<Habit> habits = habitService.getAllHabits();
+        List<Habit> habits = habitServiceImpl.getAllHabits();
         return ResponseEntity.ok(habits);
     }
 
     @GetMapping("/{userId}/{habitId}")
     public ResponseEntity<Habit> getHabitById(@PathVariable Long userId, @PathVariable Long habitId) {
-        return habitService.getHabitById(userId, habitId)
+        return habitServiceImpl.getHabitById(userId, habitId)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @PutMapping("/{userId}/{habitId}")
     public ResponseEntity<Habit> updateHabit(@PathVariable long userId,@PathVariable Long habitId, @RequestBody Habit habit) {
-        if (habitService.getHabitById(userId, habitId).isEmpty()) {
+        if (habitServiceImpl.getHabitById(userId, habitId).isEmpty()) {
             return ResponseEntity.notFound().build();
         }
         habit.setId(new HabitKey(userId, habitId));
-        Habit updateHabit = habitService.createOrUpdateHabit(habit);
+        Habit updateHabit = habitServiceImpl.createOrUpdateHabit(habit);
         return ResponseEntity.ok(updateHabit);
     }
 
     @DeleteMapping("/{userId}/{habitId}")
     public ResponseEntity<Void> deleteHabit(@PathVariable long userId,@PathVariable Long habitId) {
-        if (habitService.getHabitById(userId, habitId).isEmpty()) {
+        if (habitServiceImpl.getHabitById(userId, habitId).isEmpty()) {
             return ResponseEntity.notFound().build();
         }
-        habitService.deleteHabitById(userId, habitId);
+        habitServiceImpl.deleteHabitById(userId, habitId);
         return ResponseEntity.ok().build();
     }
 }

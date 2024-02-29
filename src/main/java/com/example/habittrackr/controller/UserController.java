@@ -28,9 +28,16 @@ public class UserController {
     }
 
     @GetMapping
-    public ResponseEntity<List<User>> getAllUsers(){
+    public ResponseEntity<List<User>> getAllUsers() {
         List<User> users = userServiceImpl.getAllUsers();
         return ResponseEntity.ok(users);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<User> getUserById(@PathVariable Long id) {
+        return userServiceImpl.getUserById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping("/{userId}/habits")
@@ -46,24 +53,17 @@ public class UserController {
             habit.setId(habitKey);
             habitServiceImpl.createOrUpdateHabit(habit);
         }
-
         return ResponseEntity.ok(user);
     }
 
     @GetMapping("/{userId}/habits")
-    public ResponseEntity<List<Habit>> getUserHabits(@PathVariable long userId){
+    public ResponseEntity<List<Habit>> getUserHabits(@PathVariable long userId) {
         User user = userServiceImpl.getUserById(userId)
-                .orElseThrow(()-> new RuntimeException("User not found"));
+                .orElseThrow(() -> new RuntimeException("User not found"));
         List<Habit> habits = user.getHabits();
         return ResponseEntity.ok(habits);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<User> getUserById(@PathVariable Long id) {
-        return userServiceImpl.getUserById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
-    }
 
     @PostMapping
     public ResponseEntity<User> createUser(@RequestBody User user) {
@@ -92,9 +92,10 @@ public class UserController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable long id) {
         Optional<User> existingUser = userServiceImpl.getUserById(id);
-        if (userServiceImpl.getUserById(id).isEmpty()) {
+        if (existingUser.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
+
         userServiceImpl.deleteUserById(id);
         return ResponseEntity.ok().build();
     }

@@ -1,5 +1,6 @@
 package com.example.habittrackr.storage;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 
 @Entity
@@ -7,8 +8,8 @@ public class Habit {
 
     @EmbeddedId
     private HabitKey id;
-
-    @ManyToOne(cascade = CascadeType.ALL)
+    @JsonBackReference
+    @ManyToOne()
     @MapsId("userId")
     @JoinColumn(name = "user_id")
     private User user;

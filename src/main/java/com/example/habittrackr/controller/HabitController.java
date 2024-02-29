@@ -7,8 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 @RequestMapping("/habits")
 public class HabitController {
@@ -19,12 +17,6 @@ public class HabitController {
         this.habitServiceImpl = habitServiceImpl;
     }
 
-
-    @GetMapping
-    public ResponseEntity<List<Habit>> getAllHabits() {
-        List<Habit> habits = habitServiceImpl.getAllHabits();
-        return ResponseEntity.ok(habits);
-    }
 
     @GetMapping("/{userId}/{habitId}")
     public ResponseEntity<Habit> getHabitById(@PathVariable Long userId, @PathVariable Long habitId) {

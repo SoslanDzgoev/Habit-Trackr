@@ -31,6 +31,7 @@ public class UserServiceImpl {
     @Transactional
     public void deleteUserById(Long id) {
         userRepository.deleteById(id);
+
     }
 
 }

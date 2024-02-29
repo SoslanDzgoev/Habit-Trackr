@@ -1,6 +1,7 @@
 package com.example.habittrackr.storage;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.util.List;
@@ -18,9 +19,9 @@ public class User {
     private String password;
     private String email;
 
+    @JsonManagedReference
     @JsonIgnore
-    @OneToMany(cascade = CascadeType.ALL,orphanRemoval = true)
-    @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = true)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", orphanRemoval = true)
     private List<Habit> habits;
 
     public User() {

@@ -1,8 +1,6 @@
-package com.example.habittrackr.controller;
+package com.example.habittrackr.controllers;
 
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class HabitControllerTest {
 

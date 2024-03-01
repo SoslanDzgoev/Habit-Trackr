@@ -1,7 +1,7 @@
-package com.example.habittrackr.controller;
+package com.example.habittrackr.controllers;
 
-import com.example.habittrackr.service.HabitServiceImpl;
-import com.example.habittrackr.service.UserServiceImpl;
+import com.example.habittrackr.services.HabitServiceImpl;
+import com.example.habittrackr.services.UserServiceImpl;
 import com.example.habittrackr.storage.Habit;
 import com.example.habittrackr.storage.User;
 import com.fasterxml.jackson.annotation.JsonInclude;

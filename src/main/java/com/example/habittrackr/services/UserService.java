@@ -1,4 +1,4 @@
-package com.example.habittrackr.service;
+package com.example.habittrackr.services;
 
 import com.example.habittrackr.storage.User;
 

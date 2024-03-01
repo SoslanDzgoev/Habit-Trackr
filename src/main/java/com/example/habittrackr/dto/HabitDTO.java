@@ -1,18 +1,8 @@
-package com.example.habittrackr.storage;
+package com.example.habittrackr.dto;
 
-import jakarta.persistence.*;
+public class HabitDTO {
 
-@Entity
-public class Habit {
-
-    @EmbeddedId
-    private HabitKey id;
-
-    @ManyToOne()
-    @MapsId("userId")
-    @JoinColumn(name = "user_id")
-    private User user;
-
+    private Long id;
     private String name;
     private String identity;
     private Long initialComplexity;
@@ -20,39 +10,13 @@ public class Habit {
     private String howToPrepareEvn;
     private Long numberOfTimes;
 
-    public Habit() {
-    }
-
-    public void setInitialComplexity(Long initialComplexity) {
-        this.initialComplexity = initialComplexity;
-    }
-
-    public Long getNumberOfTimes() {
-        return numberOfTimes;
-    }
-
-    public void setNumberOfTimes(Long numberOfTimes) {
-        this.numberOfTimes = numberOfTimes;
-    }
-
-
-
-    public HabitKey getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(HabitKey id) {
+    public void setId(Long id) {
         this.id = id;
     }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
     public String getName() {
         return name;
     }
@@ -69,11 +33,11 @@ public class Habit {
         this.identity = identity;
     }
 
-    public long getInitialComplexity() {
+    public Long getInitialComplexity() {
         return initialComplexity;
     }
 
-    public void setInitialComplexity(long initialComplexity) {
+    public void setInitialComplexity(Long initialComplexity) {
         this.initialComplexity = initialComplexity;
     }
 
@@ -93,4 +57,11 @@ public class Habit {
         this.howToPrepareEvn = howToPrepareEvn;
     }
 
+    public Long getNumberOfTimes() {
+        return numberOfTimes;
+    }
+
+    public void setNumberOfTimes(Long numberOfTimes) {
+        this.numberOfTimes = numberOfTimes;
+    }
 }

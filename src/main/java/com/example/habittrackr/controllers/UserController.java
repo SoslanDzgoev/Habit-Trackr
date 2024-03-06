@@ -2,6 +2,7 @@ package com.example.habittrackr.controllers;
 
 import com.example.habittrackr.dto.HabitDTO;
 import com.example.habittrackr.dto.UserDTO;
+import com.example.habittrackr.dto.UserInfoDTO;
 import com.example.habittrackr.dto.UserWithHabitsDTO;
 import com.example.habittrackr.mapper.Mapper;
 import com.example.habittrackr.services.HabitServiceImpl;
@@ -9,14 +10,14 @@ import com.example.habittrackr.services.UserServiceImpl;
 import com.example.habittrackr.storage.Habit;
 import com.example.habittrackr.storage.HabitKey;
 import com.example.habittrackr.storage.User;
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.Random;
 import java.util.stream.Collectors;
 
@@ -39,42 +40,46 @@ public class UserController {
     }
 
     @GetMapping
-    public List<UserDTO> getAllUsers() {
+    public ResponseEntity<List<UserDTO>> getAllUsers() {
         List<User> users = userServiceImpl.getAllUsers();
-        return mapper.toUserDTOList(users);
+        return ResponseEntity.ok(mapper.toUserDTOList(users));
     }
 
     @GetMapping("/{id}")
-    public UserDTO getUserById(@PathVariable Long id) {
+    public ResponseEntity<UserDTO> getUserById(@PathVariable Long id) {
         return userServiceImpl.getUserById(id)
-                .map(mapper::toUserDTO)
-                .orElseThrow(() -> new EntityNotFoundException("User not found with id: " + id));
+                .map(user -> ResponseEntity.ok().body(mapper.toUserDTO(user)))
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping("/{userId}/habits")
-    public UserWithHabitsDTO addHabitsToUser(@PathVariable long userId, @RequestBody List<Habit> habits) {
-        Optional<User> userOptional = userServiceImpl.getUserById(userId);
-        if (userOptional.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        }
-        User user = userOptional.get();
-        for (Habit habit : habits) {
+    public ResponseEntity<UserWithHabitsDTO> addHabitsToUser(@PathVariable long userId, @RequestBody List<HabitDTO> habits) {
+        User user = userServiceImpl.getUserById(userId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+
+        List<HabitDTO> habitDTOs = new ArrayList<>();
+        for (HabitDTO habitDTO : habits) {
+            Habit habit = mapper.toHabit(habitDTO);
             habit.setUser(user);
             HabitKey habitKey = new HabitKey(userId, new Random().nextLong());
             habit.setId(habitKey);
             habitServiceImpl.createOrUpdateHabit(habit);
+
+            HabitDTO habitDTOWithId = mapper.toHabitDTO(habit);
+            habitDTOs.add(habitDTOWithId);
+
         }
         UserWithHabitsDTO userWithHabitsDTO = new UserWithHabitsDTO();
         userWithHabitsDTO.setId(userId);
         userWithHabitsDTO.setUsername(user.getUsername());
-        List<HabitDTO> habitDTOs = habits.stream().map(mapper::toHabitDTO).toList();
         userWithHabitsDTO.setHabits(habitDTOs);
-        return userWithHabitsDTO;
+
+        return ResponseEntity.ok(userWithHabitsDTO);
     }
 
 
     @GetMapping("/{userId}/habits")
-    public UserWithHabitsDTO getUserHabits(@PathVariable long userId) {
+    public ResponseEntity<UserWithHabitsDTO> getUserHabits(@PathVariable long userId) {
         User user = userServiceImpl.getUserById(userId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
@@ -87,18 +92,19 @@ public class UserController {
                 .collect(Collectors.toList());
 
         userWithHabitsDTO.setHabits(habitDTOs);
-        return userWithHabitsDTO;
+        return ResponseEntity.ok(userWithHabitsDTO);
     }
 
 
     @PostMapping
-    public UserDTO createUser(@RequestBody User user) {
-        User newUser = userServiceImpl.createOrUpdateUser(user);
-        return mapper.toUserDTO(user);
+    public ResponseEntity<UserInfoDTO> createUser(@RequestBody UserDTO userDTO) {
+        User user = mapper.toUser(userDTO);
+        UserDTO newUser = userServiceImpl.createOrUpdateUser(user);
+        return ResponseEntity.ok(mapper.toUserInfoDTO(newUser));
     }
 
     @PutMapping("/{id}")
-    public UserDTO updateUser(@PathVariable Long id, @RequestBody User user) {
+    public ResponseEntity<UserInfoDTO> updateUser(@PathVariable Long id, @RequestBody User user) {
         User existingUser = userServiceImpl.getUserById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
@@ -106,18 +112,17 @@ public class UserController {
         existingUser.setPassword(user.getPassword());
         existingUser.setEmail(user.getEmail());
 
-        User update = userServiceImpl.createOrUpdateUser(existingUser);
+        UserDTO update = userServiceImpl.createOrUpdateUser(existingUser);
 
-        return mapper.toUserDTO(update);
+        return ResponseEntity.ok(mapper.toUserInfoDTO(update));
     }
 
 
     @DeleteMapping("/{id}")
-    public void deleteUser(@PathVariable long id) {
-        Optional<User> existingUser = userServiceImpl.getUserById(id);
-        if (existingUser.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        }
+    public ResponseEntity<Void> deleteUser(@PathVariable long id) {
+        userServiceImpl.getUserById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
         userServiceImpl.deleteUserById(id);
+        return ResponseEntity.ok().build();
     }
 }

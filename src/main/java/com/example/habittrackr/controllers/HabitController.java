@@ -4,10 +4,9 @@ import com.example.habittrackr.dto.HabitDTO;
 import com.example.habittrackr.mapper.Mapper;
 import com.example.habittrackr.storage.Habit;
 import com.example.habittrackr.services.HabitServiceImpl;
-import com.example.habittrackr.storage.HabitKey;
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -25,29 +24,36 @@ public class HabitController {
     }
 
     @GetMapping("/{userId}/{habitId}")
-    public HabitDTO getHabitById(@PathVariable Long userId, @PathVariable Long habitId) {
-        return habitServiceImpl.getHabitById(userId, habitId)
+    public ResponseEntity<HabitDTO> getHabitById(@PathVariable Long userId, @PathVariable Long habitId) {
+        HabitDTO habitDTO = habitServiceImpl.getHabitById(userId, habitId)
                 .map(mapper::toHabitDTO)
-                .orElseThrow(() -> new EntityNotFoundException
-                        ("Habit not found with userId: " + userId + " and habitId " + habitId));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        return ResponseEntity.ok(habitDTO);
     }
 
     @PutMapping("/{userId}/{habitId}")
-    public HabitDTO updateHabit(@PathVariable long userId,@PathVariable Long habitId, @RequestBody Habit habit) {
+    public ResponseEntity<HabitDTO> updateHabit(@PathVariable long userId, @PathVariable Long habitId, @RequestBody HabitDTO habitDTO) {
         Habit existingHabit = habitServiceImpl.getHabitById(userId, habitId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
-        habit.setId(new HabitKey(userId, habitId));
-        Habit updateHabit = habitServiceImpl.createOrUpdateHabit(habit);
+        existingHabit.setName(habitDTO.getName());
+        existingHabit.setIdentity(habitDTO.getIdentity());
+        existingHabit.setInitialComplexity(habitDTO.getInitialComplexity());
+        existingHabit.setContract(habitDTO.getContract());
+        existingHabit.setHowToPrepareEvn(habitDTO.getHowToPrepareEvn());
+        existingHabit.setNumberOfTimes(habitDTO.getNumberOfTimes());
 
-        return mapper.toHabitDTO(updateHabit);
+        HabitDTO updateHabit = habitServiceImpl.createOrUpdateHabit(existingHabit);
+
+        return ResponseEntity.ok(updateHabit);
     }
 
     @DeleteMapping("/{userId}/{habitId}")
-    public void deleteHabit(@PathVariable long userId,@PathVariable Long habitId) {
-        if (habitServiceImpl.getHabitById(userId, habitId).isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        }
+    public ResponseEntity<Void> deleteHabit(@PathVariable long userId, @PathVariable Long habitId) {
+        habitServiceImpl.getHabitById(userId, habitId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+
         habitServiceImpl.deleteHabitById(userId, habitId);
+        return ResponseEntity.ok().build();
     }
 }

@@ -1,5 +1,7 @@
 package com.example.habittrackr.services;
 
+import com.example.habittrackr.dto.UserDTO;
+import com.example.habittrackr.mapper.Mapper;
 import com.example.habittrackr.storage.User;
 import com.example.habittrackr.storage.UserRepository;
 import org.springframework.stereotype.Service;
@@ -11,9 +13,11 @@ import java.util.Optional;
 @Service
 public class UserServiceImpl {
     private final UserRepository userRepository;
+    private final Mapper mapper;
 
-    public UserServiceImpl(UserRepository userRepository) {
+    public UserServiceImpl(UserRepository userRepository, Mapper mapper) {
         this.userRepository = userRepository;
+        this.mapper = mapper;
     }
 
     public List<User> getAllUsers() {
@@ -24,8 +28,8 @@ public class UserServiceImpl {
         return userRepository.findById(id);
     }
 
-    public User createOrUpdateUser(User user) {
-        return userRepository.save(user);
+    public UserDTO createOrUpdateUser(User user) {
+        return mapper.toUserDTO(userRepository.save(user));
     }
 
     @Transactional

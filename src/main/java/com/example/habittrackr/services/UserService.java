@@ -1,5 +1,6 @@
 package com.example.habittrackr.services;
 
+import com.example.habittrackr.dto.UserDTO;
 import com.example.habittrackr.storage.User;
 
 
@@ -9,8 +10,11 @@ import java.util.Optional;
 
 public interface UserService {
     List<User> getAllUsers();
+
     Optional<User> getUserById(Long id);
-    User createOrUpdateUser(User user);
+
+    UserDTO createOrUpdateUser(User user);
+
     void deleteUserById(Long id);
 
 }

@@ -1,7 +1,7 @@
 package com.example.habittrackr.services;
 
 import com.example.habittrackr.dto.UserDTO;
-import com.example.habittrackr.storage.User;
+import com.example.habittrackr.storage.users.User;
 
 
 import java.util.List;

@@ -1,15 +1,19 @@
-package com.example.habittrackr.storage;
+package com.example.habittrackr.storage.habits;
 
+import com.example.habittrackr.storage.users.User;
+import com.example.habittrackr.storage.executions.HabitExecution;
 import jakarta.persistence.*;
+
+import java.util.List;
 
 @Entity
 public class Habit {
 
-    @EmbeddedId
-    private HabitKey id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long habitId;
 
     @ManyToOne()
-    @MapsId("userId")
     @JoinColumn(name = "user_id")
     private User user;
 
@@ -19,6 +23,18 @@ public class Habit {
     private String contract;
     private String howToPrepareEvn;
     private Long numberOfTimes;
+
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "habit", orphanRemoval = true)
+    private List<HabitExecution> executions;
+
+    public List<HabitExecution> getExecutions() {
+        return executions;
+    }
+
+    public void setExecutions(List<HabitExecution> executions) {
+        this.executions = executions;
+    }
 
     public Habit() {
     }
@@ -35,14 +51,12 @@ public class Habit {
         this.numberOfTimes = numberOfTimes;
     }
 
-
-
-    public HabitKey getId() {
-        return id;
+    public Long getHabitId() {
+        return habitId;
     }
 
-    public void setId(HabitKey id) {
-        this.id = id;
+    public void setHabitId(Long habitId) {
+        this.habitId = habitId;
     }
 
     public User getUser() {

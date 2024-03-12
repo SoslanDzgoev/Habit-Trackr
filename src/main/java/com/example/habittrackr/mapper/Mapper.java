@@ -1,10 +1,9 @@
 package com.example.habittrackr.mapper;
 
-import com.example.habittrackr.dto.HabitDTO;
-import com.example.habittrackr.dto.UserDTO;
-import com.example.habittrackr.dto.UserInfoDTO;
-import com.example.habittrackr.storage.Habit;
-import com.example.habittrackr.storage.User;
+import com.example.habittrackr.dto.*;
+import com.example.habittrackr.storage.executions.HabitExecution;
+import com.example.habittrackr.storage.habits.Habit;
+import com.example.habittrackr.storage.users.User;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -28,15 +27,23 @@ public class Mapper {
         return user;
     }
 
-    public List<UserDTO> toUserDTOList(List<User> users) {
+    public List<UserInfoDTO> toUserDTOList(List<User> users) {
         return users.stream()
-                .map(this::toUserDTO)
+                .map(this::toUserInfoDTO)
                 .collect(Collectors.toList());
+    }
+
+    public UserInfoDTO toUserInfoDTO(User user) {
+        UserInfoDTO userInfoDTO = new UserInfoDTO();
+        userInfoDTO.setId(user.getId());
+        userInfoDTO.setUsername(user.getUsername());
+        userInfoDTO.setEmail(user.getEmail());
+        return userInfoDTO;
     }
 
     public HabitDTO toHabitDTO(Habit habit) {
         HabitDTO habitDTO = new HabitDTO();
-        habitDTO.setId(habit.getId().getHabitId());
+        habitDTO.setId(habit.getHabitId());
         habitDTO.setName(habit.getName());
         habitDTO.setIdentity(habit.getIdentity());
         habitDTO.setInitialComplexity(habit.getInitialComplexity());
@@ -58,13 +65,28 @@ public class Mapper {
         return habit;
     }
 
-
     public UserInfoDTO toUserInfoDTO(UserDTO userDTO) {
         UserInfoDTO userInfoDTO = new UserInfoDTO();
         userInfoDTO.setId(userDTO.getId());
         userInfoDTO.setUsername(userDTO.getUsername());
         userInfoDTO.setEmail(userDTO.getEmail());
         return userInfoDTO;
+    }
+
+    public HabitExecution toHabitExecution(HabitExecutionDTO habitExecutionDTO, User user, Habit habit) {
+        HabitExecution habitExecution = new HabitExecution();
+        habitExecution.setStatus(habitExecutionDTO.getStatus());
+        habitExecution.setUser(user);
+        habitExecution.setHabit(habit);
+        return habitExecution;
+    }
+
+    public HabitExecutionDTO toHabitExecutionDTO(HabitExecution habitExecution) {
+        HabitExecutionDTO habitExecutionDTO = new HabitExecutionDTO();
+        habitExecutionDTO.setExecutionId(habitExecution.getExecutionId());
+        habitExecutionDTO.setLocalDateTime(habitExecution.getLocalDateTime());
+        habitExecutionDTO.setStatus(habitExecution.getStatus());
+        return habitExecutionDTO;
     }
 
 }

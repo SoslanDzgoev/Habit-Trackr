@@ -2,7 +2,7 @@ package com.example.habittrackr.controllers;
 
 import com.example.habittrackr.dto.HabitDTO;
 import com.example.habittrackr.mapper.Mapper;
-import com.example.habittrackr.storage.Habit;
+import com.example.habittrackr.storage.habits.Habit;
 import com.example.habittrackr.services.HabitServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -24,16 +24,16 @@ public class HabitController {
     }
 
     @GetMapping("/{userId}/{habitId}")
-    public ResponseEntity<HabitDTO> getHabitById(@PathVariable Long userId, @PathVariable Long habitId) {
-        HabitDTO habitDTO = habitServiceImpl.getHabitById(userId, habitId)
+    public ResponseEntity<HabitDTO> getHabitById(@PathVariable Long habitId) {
+        HabitDTO habitDTO = habitServiceImpl.getHabitById(habitId)
                 .map(mapper::toHabitDTO)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
         return ResponseEntity.ok(habitDTO);
     }
 
     @PutMapping("/{userId}/{habitId}")
-    public ResponseEntity<HabitDTO> updateHabit(@PathVariable long userId, @PathVariable Long habitId, @RequestBody HabitDTO habitDTO) {
-        Habit existingHabit = habitServiceImpl.getHabitById(userId, habitId)
+    public ResponseEntity<HabitDTO> updateHabit(@PathVariable Long habitId, @RequestBody HabitDTO habitDTO) {
+        Habit existingHabit = habitServiceImpl.getHabitById(habitId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
         existingHabit.setName(habitDTO.getName());
@@ -49,11 +49,11 @@ public class HabitController {
     }
 
     @DeleteMapping("/{userId}/{habitId}")
-    public ResponseEntity<Void> deleteHabit(@PathVariable long userId, @PathVariable Long habitId) {
-        habitServiceImpl.getHabitById(userId, habitId)
+    public ResponseEntity<Void> deleteHabit(@PathVariable Long habitId) {
+        habitServiceImpl.getHabitById(habitId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
-        habitServiceImpl.deleteHabitById(userId, habitId);
+        habitServiceImpl.deleteHabitById(habitId);
         return ResponseEntity.ok().build();
     }
 }

@@ -1,5 +1,6 @@
-package com.example.habittrackr.storage;
+package com.example.habittrackr.storage.users;
 
+import com.example.habittrackr.storage.habits.Habit;
 import jakarta.persistence.*;
 
 import java.util.List;

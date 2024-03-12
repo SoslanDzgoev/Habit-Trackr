@@ -7,9 +7,8 @@ import com.example.habittrackr.dto.UserWithHabitsDTO;
 import com.example.habittrackr.mapper.Mapper;
 import com.example.habittrackr.services.HabitServiceImpl;
 import com.example.habittrackr.services.UserServiceImpl;
-import com.example.habittrackr.storage.Habit;
-import com.example.habittrackr.storage.HabitKey;
-import com.example.habittrackr.storage.User;
+import com.example.habittrackr.storage.habits.Habit;
+import com.example.habittrackr.storage.users.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +17,6 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 import java.util.stream.Collectors;
 
 @RestController
@@ -39,8 +37,28 @@ public class UserController {
         this.mapper = mapper;
     }
 
+    @GetMapping("/users-with-habits")
+    public ResponseEntity <List<UserWithHabitsDTO>> allUsersWithHabits(){
+        List<User> users = userServiceImpl.getAllUsers();
+        List<UserWithHabitsDTO> userWithHabits = new ArrayList<>();
+
+        for (User user : users){
+            UserWithHabitsDTO userWithHabitsDTO = new UserWithHabitsDTO();
+            userWithHabitsDTO.setId(user.getId());
+            userWithHabitsDTO.setUsername(user.getUsername());
+
+            List<HabitDTO> habitDTOS = user.getHabits().stream()
+                    .map(mapper::toHabitDTO).toList();
+
+            userWithHabitsDTO.setHabits(habitDTOS);
+            userWithHabits.add(userWithHabitsDTO);
+        }
+        return ResponseEntity.ok(userWithHabits);
+
+    }
+
     @GetMapping
-    public ResponseEntity<List<UserDTO>> getAllUsers() {
+    public ResponseEntity<List<UserInfoDTO>> getAllUsers() {
         List<User> users = userServiceImpl.getAllUsers();
         return ResponseEntity.ok(mapper.toUserDTOList(users));
     }
@@ -61,8 +79,6 @@ public class UserController {
         for (HabitDTO habitDTO : habits) {
             Habit habit = mapper.toHabit(habitDTO);
             habit.setUser(user);
-            HabitKey habitKey = new HabitKey(userId, new Random().nextLong());
-            habit.setId(habitKey);
             habitServiceImpl.createOrUpdateHabit(habit);
 
             HabitDTO habitDTOWithId = mapper.toHabitDTO(habit);

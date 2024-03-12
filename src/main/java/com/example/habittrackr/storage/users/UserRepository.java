@@ -1,4 +1,4 @@
-package com.example.habittrackr.storage;
+package com.example.habittrackr.storage.users;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

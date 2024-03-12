@@ -2,8 +2,8 @@ package com.example.habittrackr.services;
 
 import com.example.habittrackr.dto.HabitDTO;
 import com.example.habittrackr.mapper.Mapper;
-import com.example.habittrackr.storage.Habit;
-import com.example.habittrackr.storage.HabitRepository;
+import com.example.habittrackr.storage.habits.Habit;
+import com.example.habittrackr.storage.habits.HabitRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,21 +26,20 @@ public class HabitServiceImpl implements HabitService {
     }
 
     @Override
-    public Optional<Habit> getHabitById(Long userId, long habitId) {
-        return habitRepository.findByIdUserIdAndIdHabitId(userId, habitId);
+    public Optional<Habit> getHabitById(long habitId) {
+        return habitRepository.findById(habitId);
     }
 
     @Override
     public HabitDTO createOrUpdateHabit(Habit habit) {
-        habitRepository.save(habit);
-        return mapper.toHabitDTO(habit);
+        Habit save = habitRepository.save(habit);
+        return mapper.toHabitDTO(save);
     }
 
     @Override
     @Transactional
-    public void deleteHabitById(Long userId, long habitId) {
-        habitRepository.deleteByIdUserIdAndIdHabitId(userId, habitId);
+    public void deleteHabitById(long habitId) {
+        habitRepository.deleteById(habitId);
     }
-
 
 }

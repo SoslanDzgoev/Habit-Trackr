@@ -2,8 +2,8 @@ package com.example.habittrackr.services;
 
 import com.example.habittrackr.dto.UserDTO;
 import com.example.habittrackr.mapper.Mapper;
-import com.example.habittrackr.storage.User;
-import com.example.habittrackr.storage.UserRepository;
+import com.example.habittrackr.storage.users.User;
+import com.example.habittrackr.storage.users.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

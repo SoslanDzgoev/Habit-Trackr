@@ -1,6 +1,5 @@
 package com.example.habittrackr.controllers;
 
-import com.example.habittrackr.dto.HabitDTO;
 import com.example.habittrackr.dto.HabitExecutionDTO;
 import com.example.habittrackr.dto.HabitWithExecutionsDTO;
 import com.example.habittrackr.mapper.Mapper;
@@ -16,9 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/habits")
@@ -53,22 +50,17 @@ public class HabitExecutionController {
             habit.setNumberOfTimes(currentNumberOfTime + 1);
         }
 
+        habitService.createOrUpdateHabit(habit);
 
+        HabitExecution habitExecution = mapper.toHabitExecution(habitExecutionDTO, user, habit);
 
-        HabitDTO updateHabit = habitService.createOrUpdateHabit(habit);
-
-        HabitExecution habitExecution = mapper.toHabitExecution(habitExecutionDTO,user,habit);
-
-        if (habitExecution.getLocalDateTime() == null) {
-            habitExecution.setLocalDateTime(LocalDateTime.now());
-        }
-        habitExecutionService.createOrUpdateHabitExecution(habitExecution);
+        habitExecutionService.createHabitExecution(habitExecution);
 
         List<HabitExecutionDTO> habitExecutions = habit.getExecutions().stream()
                 .map(mapper::toHabitExecutionDTO).toList();
 
         HabitWithExecutionsDTO habitWithExecutionsDTO = new HabitWithExecutionsDTO();
-        habitWithExecutionsDTO.setHabit(updateHabit);
+        habitWithExecutionsDTO.setHabit(mapper.toHabitDTO(habit));
         habitWithExecutionsDTO.setExecutions(habitExecutions);
 
         return ResponseEntity.ok(habitWithExecutionsDTO);

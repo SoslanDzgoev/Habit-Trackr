@@ -8,6 +8,6 @@ import java.util.List;
 public interface HabitExecutionService {
     List<HabitExecution> getAllHabitExecutions();
 
-    HabitExecution createOrUpdateHabitExecution(HabitExecution habitExecution);
+    HabitExecution createHabitExecution(HabitExecution habitExecution);
 
 }

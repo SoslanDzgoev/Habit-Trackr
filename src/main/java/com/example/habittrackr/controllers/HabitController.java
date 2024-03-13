@@ -23,7 +23,7 @@ public class HabitController {
         this.mapper = mapper;
     }
 
-    @GetMapping("/{userId}/{habitId}")
+    @GetMapping("/{habitId}")
     public ResponseEntity<HabitDTO> getHabitById(@PathVariable Long habitId) {
         HabitDTO habitDTO = habitServiceImpl.getHabitById(habitId)
                 .map(mapper::toHabitDTO)
@@ -31,7 +31,7 @@ public class HabitController {
         return ResponseEntity.ok(habitDTO);
     }
 
-    @PutMapping("/{userId}/{habitId}")
+    @PutMapping("/{habitId}")
     public ResponseEntity<HabitDTO> updateHabit(@PathVariable Long habitId, @RequestBody HabitDTO habitDTO) {
         Habit existingHabit = habitServiceImpl.getHabitById(habitId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));

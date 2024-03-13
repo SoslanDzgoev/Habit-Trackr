@@ -23,7 +23,7 @@ public class HabitExecutionServiceImpl implements HabitExecutionService{
     }
 
     @Override
-    public HabitExecution createOrUpdateHabitExecution(HabitExecution habitExecution) {
+    public HabitExecution createHabitExecution(HabitExecution habitExecution) {
         return habitExecutionRepository.save(habitExecution);
     }
 

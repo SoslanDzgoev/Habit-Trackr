@@ -12,6 +12,16 @@ public class HabitExecutionDTO {
 
     private HabitStatus status;
 
+    private Long activityParameter;
+
+    public Long getActivityParameter() {
+        return activityParameter;
+    }
+
+    public void setActivityParameter(Long activityParameter) {
+        this.activityParameter = activityParameter;
+    }
+
     public Long getExecutionId() {
         return executionId;
     }

@@ -19,16 +19,24 @@ public class HabitExecution {
     @ManyToOne
     private User user;
 
-    @Column(name = "execution_date")
-    private LocalDateTime localDateTime;
+    private LocalDateTime executionDate;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "status")
     private HabitStatus status;
+
+    private Long activityParameter;
 
     @PrePersist
     protected void onCreate() {
-        localDateTime = LocalDateTime.now();
+        executionDate = LocalDateTime.now();
+    }
+
+    public Long getActivityParameter() {
+        return activityParameter;
+    }
+
+    public void setActivityParameter(Long activityParameter) {
+        this.activityParameter = activityParameter;
     }
 
     public Habit getHabit() {
@@ -55,12 +63,12 @@ public class HabitExecution {
         this.user = user;
     }
 
-    public LocalDateTime getLocalDateTime() {
-        return localDateTime;
+    public LocalDateTime getExecutionDate() {
+        return executionDate;
     }
 
-    public void setLocalDateTime(LocalDateTime localDateTime) {
-        this.localDateTime = localDateTime;
+    public void setExecutionDate(LocalDateTime localDateTime) {
+        this.executionDate = localDateTime;
     }
 
     public HabitStatus getStatus() {

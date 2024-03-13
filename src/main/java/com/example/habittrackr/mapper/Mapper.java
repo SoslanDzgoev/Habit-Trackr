@@ -6,6 +6,7 @@ import com.example.habittrackr.storage.habits.Habit;
 import com.example.habittrackr.storage.users.User;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -75,17 +76,20 @@ public class Mapper {
 
     public HabitExecution toHabitExecution(HabitExecutionDTO habitExecutionDTO, User user, Habit habit) {
         HabitExecution habitExecution = new HabitExecution();
+        habitExecution.setActivityParameter(habitExecutionDTO.getActivityParameter());
         habitExecution.setStatus(habitExecutionDTO.getStatus());
         habitExecution.setUser(user);
         habitExecution.setHabit(habit);
+        habitExecution.setExecutionDate(LocalDateTime.now());
         return habitExecution;
     }
 
     public HabitExecutionDTO toHabitExecutionDTO(HabitExecution habitExecution) {
         HabitExecutionDTO habitExecutionDTO = new HabitExecutionDTO();
         habitExecutionDTO.setExecutionId(habitExecution.getExecutionId());
-        habitExecutionDTO.setLocalDateTime(habitExecution.getLocalDateTime());
+        habitExecutionDTO.setLocalDateTime(habitExecution.getExecutionDate());
         habitExecutionDTO.setStatus(habitExecution.getStatus());
+        habitExecutionDTO.setActivityParameter(habitExecution.getActivityParameter());
         return habitExecutionDTO;
     }
 

@@ -24,7 +24,6 @@ public class Habit {
     private String howToPrepareEvn;
     private Long numberOfTimes;
 
-
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "habit", orphanRemoval = true)
     private List<HabitExecution> executions;
 

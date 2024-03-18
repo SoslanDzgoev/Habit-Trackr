@@ -2,6 +2,7 @@ package com.example.habittrackr.controllers;
 
 import com.example.habittrackr.dto.HabitExecutionDTO;
 import com.example.habittrackr.dto.HabitWithExecutionsDTO;
+import com.example.habittrackr.dto.UpdateActivityDTO;
 import com.example.habittrackr.mapper.Mapper;
 import com.example.habittrackr.services.HabitExecutionServiceImpl;
 import com.example.habittrackr.services.HabitServiceImpl;
@@ -34,6 +35,20 @@ public class HabitExecutionController {
         this.habitExecutionService = habitExecutionService;
     }
 
+    @GetMapping("/{habitId}/executions")
+    public ResponseEntity<HabitWithExecutionsDTO> getHabitExecutions(@PathVariable Long habitId){
+        Habit habit = habitService.getHabitById(habitId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        List<HabitExecution> habitExecutionsList = habit.getExecutions();
+
+        List<HabitExecutionDTO> habitExecutionDTOS = habitExecutionsList.stream()
+                .map(mapper::toHabitExecutionDTO).toList();
+        HabitWithExecutionsDTO habitWithExecutionsDTO = new HabitWithExecutionsDTO();
+        habitWithExecutionsDTO.setHabit(mapper.toHabitDTO(habit));
+        habitWithExecutionsDTO.setExecutions(habitExecutionDTOS);
+        return ResponseEntity.ok(habitWithExecutionsDTO);
+    }
+
     @PutMapping("/{userId}/{habitId}/execute")
     public ResponseEntity<HabitWithExecutionsDTO> executeHabit
             (@PathVariable Long userId, @PathVariable Long habitId, @RequestBody HabitExecutionDTO habitExecutionDTO) {
@@ -54,7 +69,7 @@ public class HabitExecutionController {
 
         HabitExecution habitExecution = mapper.toHabitExecution(habitExecutionDTO, user, habit);
 
-        habitExecutionService.createHabitExecution(habitExecution);
+        habitExecutionService.createOrUpdateHabitExecution(habitExecution);
 
         List<HabitExecutionDTO> habitExecutions = habit.getExecutions().stream()
                 .map(mapper::toHabitExecutionDTO).toList();
@@ -64,6 +79,28 @@ public class HabitExecutionController {
         habitWithExecutionsDTO.setExecutions(habitExecutions);
 
         return ResponseEntity.ok(habitWithExecutionsDTO);
+    }
 
+
+    @PostMapping("/{userId}/{habitId}/updateActivityParameter")
+    public ResponseEntity<HabitExecutionDTO> updateActivityParameter(
+            @PathVariable Long userId, @PathVariable Long habitId, @RequestBody UpdateActivityDTO updateActivityDTO){
+        User user = userService.getUserById(userId)
+                .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        Habit habit = habitService.getHabitById(habitId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+
+        HabitExecution habitExecution = habitExecutionService.getHabitExecutionByUserAndHabit(user, habit)
+                .orElseGet(()-> {
+                    HabitExecution newHabitExecution = new HabitExecution();
+                    newHabitExecution.setUser(user);
+                    newHabitExecution.setHabit(habit);
+                    return newHabitExecution;
+                });
+
+        habitExecution.setActivityParameter(updateActivityDTO.getActivityParameter());
+
+        HabitExecution orUpdateHabitExecution = habitExecutionService.createOrUpdateHabitExecution(habitExecution);
+        return ResponseEntity.ok(mapper.toHabitExecutionDTO(orUpdateHabitExecution));
     }
 }

@@ -57,11 +57,6 @@ public class UserController {
 
     }
 
-    @GetMapping
-    public ResponseEntity<List<UserInfoDTO>> getAllUsers() {
-        List<User> users = userServiceImpl.getAllUsers();
-        return ResponseEntity.ok(mapper.toUserDTOList(users));
-    }
 
     @GetMapping("/{id}")
     public ResponseEntity<UserDTO> getUserById(@PathVariable Long id) {

@@ -3,9 +3,13 @@ package com.example.habittrackr.services;
 import com.example.habittrackr.mapper.Mapper;
 import com.example.habittrackr.storage.executions.HabitExecution;
 import com.example.habittrackr.storage.executions.HabitExecutionRepository;
+import com.example.habittrackr.storage.habits.Habit;
+import com.example.habittrackr.storage.users.User;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
+
 @Service
 public class HabitExecutionServiceImpl implements HabitExecutionService{
 
@@ -23,8 +27,13 @@ public class HabitExecutionServiceImpl implements HabitExecutionService{
     }
 
     @Override
-    public HabitExecution createHabitExecution(HabitExecution habitExecution) {
+    public HabitExecution createOrUpdateHabitExecution(HabitExecution habitExecution) {
         return habitExecutionRepository.save(habitExecution);
+    }
+
+    @Override
+    public Optional<HabitExecution> getHabitExecutionByUserAndHabit(User user, Habit habit) {
+        return habitExecutionRepository.getHabitExecutionByUserAndHabit(user,habit);
     }
 
 }

@@ -48,7 +48,7 @@ public class HabitController {
         return ResponseEntity.ok(updateHabit);
     }
 
-    @DeleteMapping("/{userId}/{habitId}")
+    @DeleteMapping("/{habitId}")
     public ResponseEntity<Void> deleteHabit(@PathVariable Long habitId) {
         habitServiceImpl.getHabitById(habitId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));

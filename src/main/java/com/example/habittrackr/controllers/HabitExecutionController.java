@@ -58,11 +58,11 @@ public class HabitExecutionController {
         Habit habit = habitService.getHabitById(habitId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
-        if (habit.getNumberOfTimes() == null) {
-            habit.setNumberOfTimes(1L);
+        if (habit.getExecutionCount() == null) {
+            habit.setExecutionCount(1L);
         } else {
-            Long currentNumberOfTime = habit.getNumberOfTimes();
-            habit.setNumberOfTimes(currentNumberOfTime + 1);
+            Long currentNumberOfTime = habit.getExecutionCount();
+            habit.setExecutionCount(currentNumberOfTime + 1);
         }
 
         habitService.createOrUpdateHabit(habit);

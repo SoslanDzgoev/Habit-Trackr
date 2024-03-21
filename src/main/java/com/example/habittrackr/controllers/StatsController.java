@@ -36,11 +36,4 @@ public class StatsController {
         List<User> users = userService.getAllUsers();
         return ResponseEntity.ok(mapper.toUserDTOList(users));
     }
-
-
-
-
-
-
-
 }

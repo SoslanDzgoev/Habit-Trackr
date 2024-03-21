@@ -1,14 +1,33 @@
 package com.example.habittrackr.dto;
 
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Size;
+
 public class HabitDTO {
 
     private Long id;
+
+    @NotEmpty
+    @Size(min = 2, max = 20)
     private String name;
+
+    @NotEmpty
+    @Size(min = 2, max = 100)
     private String identity;
+
+    @NotEmpty
     private Long initialComplexity;
+
+    @NotEmpty
+    @Size(min = 2, max = 250)
     private String contract;
+
+    @NotEmpty
     private String howToPrepareEvn;
-    private Long numberOfTimes;
+
+    private Long executionCount;
+
+
 
     public Long getId() {
         return id;
@@ -58,11 +77,11 @@ public class HabitDTO {
         this.howToPrepareEvn = howToPrepareEvn;
     }
 
-    public Long getNumberOfTimes() {
-        return numberOfTimes;
+    public Long getExecutionCount() {
+        return executionCount;
     }
 
-    public void setNumberOfTimes(Long numberOfTimes) {
-        this.numberOfTimes = numberOfTimes;
+    public void setExecutionCount(Long executionCount) {
+        this.executionCount = executionCount;
     }
 }

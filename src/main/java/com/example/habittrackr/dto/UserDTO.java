@@ -1,10 +1,26 @@
 package com.example.habittrackr.dto;
 
+
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Size;
+
+
 public class UserDTO {
 
     private Long id;
+
+    @NotEmpty
+    @Size(min = 3, max = 40)
     private String username;
+
+    @NotEmpty
+    @Size(min = 8)
     private String password;
+
+
+    @NotEmpty
+    @Email
     private String email;
 
     public void setId(Long id) {

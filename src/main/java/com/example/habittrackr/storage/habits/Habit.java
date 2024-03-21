@@ -1,5 +1,6 @@
 package com.example.habittrackr.storage.habits;
 
+import com.example.habittrackr.storage.identity.Identity;
 import com.example.habittrackr.storage.users.User;
 import com.example.habittrackr.storage.executions.HabitExecution;
 import jakarta.persistence.*;
@@ -18,11 +19,15 @@ public class Habit {
     private User user;
 
     private String name;
-    private String identity;
+
+    @ManyToOne
+    @JoinColumn(name = "identity_description", referencedColumnName = "description")
+    private Identity identity;
+
     private Long initialComplexity;
     private String contract;
     private String howToPrepareEvn;
-    private Long numberOfTimes;
+    private Long executionCount;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "habit", orphanRemoval = true)
     private List<HabitExecution> executions;
@@ -42,12 +47,12 @@ public class Habit {
         this.initialComplexity = initialComplexity;
     }
 
-    public Long getNumberOfTimes() {
-        return numberOfTimes;
+    public Long getExecutionCount() {
+        return executionCount;
     }
 
-    public void setNumberOfTimes(Long numberOfTimes) {
-        this.numberOfTimes = numberOfTimes;
+    public void setExecutionCount(Long numberOfTimes) {
+        this.executionCount = numberOfTimes;
     }
 
     public Long getHabitId() {
@@ -74,11 +79,11 @@ public class Habit {
         this.name = name;
     }
 
-    public String getIdentity() {
+    public Identity getIdentity() {
         return identity;
     }
 
-    public void setIdentity(String identity) {
+    public void setIdentity(Identity identity) {
         this.identity = identity;
     }
 

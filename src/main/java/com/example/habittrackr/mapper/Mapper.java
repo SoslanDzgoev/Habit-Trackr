@@ -3,6 +3,7 @@ package com.example.habittrackr.mapper;
 import com.example.habittrackr.dto.*;
 import com.example.habittrackr.storage.executions.HabitExecution;
 import com.example.habittrackr.storage.habits.Habit;
+import com.example.habittrackr.storage.identity.Identity;
 import com.example.habittrackr.storage.users.User;
 import org.springframework.stereotype.Component;
 
@@ -24,7 +25,7 @@ public class Mapper {
         User user = new User();
         user.setUsername(userDTO.getUsername());
         user.setPassword(userDTO.getPassword());
-        user.setEmail(userDTO.getPassword());
+        user.setEmail(userDTO.getEmail());
         return user;
     }
 
@@ -46,11 +47,10 @@ public class Mapper {
         HabitDTO habitDTO = new HabitDTO();
         habitDTO.setId(habit.getHabitId());
         habitDTO.setName(habit.getName());
-        habitDTO.setIdentity(habit.getIdentity());
         habitDTO.setInitialComplexity(habit.getInitialComplexity());
         habitDTO.setContract(habit.getContract());
         habitDTO.setHowToPrepareEvn(habit.getHowToPrepareEvn());
-        habitDTO.setNumberOfTimes(habit.getNumberOfTimes());
+        habitDTO.setExecutionCount(habit.getExecutionCount());
 
         return habitDTO;
     }
@@ -58,11 +58,10 @@ public class Mapper {
     public Habit toHabit(HabitDTO habitDTO) {
         Habit habit = new Habit();
         habit.setName(habitDTO.getName());
-        habit.setIdentity(habitDTO.getIdentity());
         habit.setInitialComplexity(habitDTO.getInitialComplexity());
         habit.setContract(habitDTO.getContract());
         habit.setHowToPrepareEvn(habitDTO.getHowToPrepareEvn());
-        habit.setNumberOfTimes(habitDTO.getNumberOfTimes());
+        habit.setExecutionCount(habitDTO.getExecutionCount());
         return habit;
     }
 
@@ -93,4 +92,15 @@ public class Mapper {
         return habitExecutionDTO;
     }
 
+    public Identity toIdentity(IdentityDTO identityDTO) {
+        Identity identity = new Identity();
+        identity.setDescription(identityDTO.getDescription());
+        return identity;
+    }
+
+    public IdentityDTO toIdentityDTO(Identity identity) {
+        IdentityDTO identityDTO = new IdentityDTO();
+        identityDTO.setDescription(identity.getDescription());
+        return identityDTO;
+    }
 }

@@ -13,6 +13,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.List;
+
 
 @RestController
 @RequestMapping("/identities")
@@ -29,21 +31,23 @@ public class IdentityController {
     }
 
     @PostMapping
-    public ResponseEntity<IdentityDTO> createIdentity(@RequestBody IdentityDTO identityDTO){
-        Identity identity = mapper.toIdentity(identityDTO);
-        IdentityDTO orUpdateIdentity = identityService.createOrUpdateIdentity(identity);
-        return ResponseEntity.ok(orUpdateIdentity);
+    public ResponseEntity<Void> createIdentity(@RequestBody List<IdentityDTO> identities){
+        for (IdentityDTO identityDTO: identities){
+            Identity identity = mapper.toIdentity(identityDTO);
+            identityService.createOrUpdateIdentity(identity);
+        }
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/{habitId}/{identityId}")
-    public ResponseEntity<HabitDTO> addIdentityToHabit(@PathVariable Long habitId, @PathVariable Long identityId){
-        Habit habit = habitService.getHabitById(habitId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+    public ResponseEntity<Void> addIdentityToHabit(@PathVariable Long habitId, @PathVariable Long identityId){
+        Habit habit = new Habit();
+        habit.setHabitId(habitId);
         Identity identity = identityService.getIdentityById(identityId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
         habit.setIdentity(identity);
-        HabitDTO updateHabit = habitService.createOrUpdateHabit(habit);
-        return ResponseEntity.ok(updateHabit);
+        habitService.createOrUpdateHabit(habit);
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/{identityId}")

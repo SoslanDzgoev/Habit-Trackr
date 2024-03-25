@@ -22,14 +22,13 @@ import java.util.List;
 @RequestMapping("/habits")
 public class HabitExecutionController {
 
-    private final UserServiceImpl userService;
     private final HabitServiceImpl habitService;
     private final Mapper mapper;
     private final HabitExecutionServiceImpl habitExecutionService;
 
     @Autowired
-    public HabitExecutionController(UserServiceImpl userService, HabitServiceImpl habitService, Mapper mapper, HabitExecutionServiceImpl habitExecutionService) {
-        this.userService = userService;
+    public HabitExecutionController( HabitServiceImpl habitService, Mapper mapper, HabitExecutionServiceImpl habitExecutionService) {
+
         this.habitService = habitService;
         this.mapper = mapper;
         this.habitExecutionService = habitExecutionService;
@@ -49,11 +48,11 @@ public class HabitExecutionController {
         return ResponseEntity.ok(habitWithExecutionsDTO);
     }
 
-    @PutMapping("/{userId}/{habitId}/execute")
-    public ResponseEntity<HabitWithExecutionsDTO> executeHabit
+    @PostMapping("/{userId}/{habitId}/execute")
+    public ResponseEntity<Void> executeHabit
             (@PathVariable Long userId, @PathVariable Long habitId, @RequestBody HabitExecutionDTO habitExecutionDTO) {
-        User user = userService.getUserById(userId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        User user = new User();
+        user.setId(userId);
 
         Habit habit = habitService.getHabitById(habitId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
@@ -71,22 +70,15 @@ public class HabitExecutionController {
 
         habitExecutionService.createOrUpdateHabitExecution(habitExecution);
 
-        List<HabitExecutionDTO> habitExecutions = habit.getExecutions().stream()
-                .map(mapper::toHabitExecutionDTO).toList();
-
-        HabitWithExecutionsDTO habitWithExecutionsDTO = new HabitWithExecutionsDTO();
-        habitWithExecutionsDTO.setHabit(mapper.toHabitDTO(habit));
-        habitWithExecutionsDTO.setExecutions(habitExecutions);
-
-        return ResponseEntity.ok(habitWithExecutionsDTO);
+        return ResponseEntity.ok().build();
     }
 
 
     @PostMapping("/{userId}/{habitId}/updateActivityParameter")
-    public ResponseEntity<HabitExecutionDTO> updateActivityParameter(
+    public ResponseEntity<Void> updateActivityParameter(
             @PathVariable Long userId, @PathVariable Long habitId, @RequestBody UpdateActivityDTO updateActivityDTO){
-        User user = userService.getUserById(userId)
-                .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        User user = new User();
+        user.setId(userId);
         Habit habit = habitService.getHabitById(habitId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
@@ -100,7 +92,7 @@ public class HabitExecutionController {
 
         habitExecution.setActivityParameter(updateActivityDTO.getActivityParameter());
 
-        HabitExecution orUpdateHabitExecution = habitExecutionService.createOrUpdateHabitExecution(habitExecution);
-        return ResponseEntity.ok(mapper.toHabitExecutionDTO(orUpdateHabitExecution));
+        habitExecutionService.createOrUpdateHabitExecution(habitExecution);
+        return ResponseEntity.ok().build();
     }
 }

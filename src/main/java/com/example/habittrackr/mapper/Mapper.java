@@ -61,17 +61,9 @@ public class Mapper {
         habit.setInitialComplexity(habitDTO.getInitialComplexity());
         habit.setContract(habitDTO.getContract());
         habit.setHowToPrepareEvn(habitDTO.getHowToPrepareEvn());
-        habit.setExecutionCount(habitDTO.getExecutionCount());
         return habit;
     }
 
-    public UserInfoDTO toUserInfoDTO(UserDTO userDTO) {
-        UserInfoDTO userInfoDTO = new UserInfoDTO();
-        userInfoDTO.setId(userDTO.getId());
-        userInfoDTO.setUsername(userDTO.getUsername());
-        userInfoDTO.setEmail(userDTO.getEmail());
-        return userInfoDTO;
-    }
 
     public HabitExecution toHabitExecution(HabitExecutionDTO habitExecutionDTO, User user, Habit habit) {
         HabitExecution habitExecution = new HabitExecution();

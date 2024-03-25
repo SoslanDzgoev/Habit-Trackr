@@ -2,7 +2,6 @@ package com.example.habittrackr.controllers;
 
 import com.example.habittrackr.dto.HabitDTO;
 import com.example.habittrackr.dto.UserDTO;
-import com.example.habittrackr.dto.UserInfoDTO;
 import com.example.habittrackr.dto.UserWithHabitsDTO;
 import com.example.habittrackr.mapper.Mapper;
 import com.example.habittrackr.services.UserServiceImpl;
@@ -33,10 +32,10 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<UserInfoDTO> createUser(@RequestBody UserDTO userDTO) {
+    public ResponseEntity<Void> createUser(@RequestBody UserDTO userDTO) {
         User user = mapper.toUser(userDTO);
-        UserDTO newUser = userService.createOrUpdateUser(user);
-        return ResponseEntity.ok(mapper.toUserInfoDTO(newUser));
+        userService.createOrUpdateUser(user);
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/{id}")
@@ -65,7 +64,7 @@ public class UserController {
     }
 
     @GetMapping("/users-with-habits")
-    public ResponseEntity<List<UserWithHabitsDTO>> allUsersWithHabits() {
+    public ResponseEntity<List<UserWithHabitsDTO>> getAllUsersWithHabits() {
         List<User> users = userService.getAllUsers();
         List<UserWithHabitsDTO> userWithHabits = new ArrayList<>();
 
@@ -84,7 +83,7 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<UserInfoDTO> updateUser(@PathVariable Long id, @RequestBody User user) {
+    public ResponseEntity<Void> updateUser(@PathVariable Long id, @RequestBody User user) {
         User existingUser = userService.getUserById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
@@ -92,9 +91,9 @@ public class UserController {
         existingUser.setPassword(user.getPassword());
         existingUser.setEmail(user.getEmail());
 
-        UserDTO update = userService.createOrUpdateUser(existingUser);
+        userService.createOrUpdateUser(existingUser);
 
-        return ResponseEntity.ok(mapper.toUserInfoDTO(update));
+        return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{id}")
